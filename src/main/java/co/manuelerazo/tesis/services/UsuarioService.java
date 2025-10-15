@@ -46,7 +46,7 @@ public class UsuarioService {
     public UsuarioResponseDTO ObtenerUsuarioPorId (Integer id){
         //buscamos por id
         Usuario usuario = usuarioRepository.findById(id)
-                        //si no lo encontramos mostramos uestra excepcion personalizada
+                        //si no lo encontramos mostramos nuestra excepcion personalizada
                         .orElseThrow(()->new ResourceNotFoundException("usuario no encontrado con el ID:"+id));
 
         //si lo encontramos lo retornamos y lo convertimos al dto
@@ -73,7 +73,7 @@ public class UsuarioService {
         return convertirA_DTO(usuarioActualizado);
     }
     
-    //metodo para eliminar el producto
+    //metodo para eliminar el usuario
     public void EliminarUsuario(Integer id){
         if(!usuarioRepository.existsById(id)){
             throw new ResourceNotFoundException("no se puede eliminar usuario no encontrado con el Id:"+id);
@@ -92,7 +92,7 @@ public class UsuarioService {
             throw new IllegalArgumentException("el correo ya esta registrado");
         });
 
-        //creamos un nuevo usuario registrado 
+        //creamos un nuevo usuario 
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setNombre(usuarioRequestDTO.getNombre());
         nuevoUsuario.setCorreo(usuarioRequestDTO.getCorreo());
