@@ -1,0 +1,36 @@
+services:
+  tesis-api:
+    build: .
+    container_name: tesis-api-container
+    ports:
+      - "9091:8080"  # Puerto local 9091 → Puerto interno 8080
+    volumes:
+      - .:/app
+      - /app/target
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://tesis-db:5432/tesisdb
+      - SPRING_DATASOURCE_USERNAME=tesisuser
+      - SPRING_DATASOURCE_PASSWORD=tesispass
+    depends_on:
+      - tesis-db
+
+  tesis-db:
+    image: postgres:15
+    container_name: tesis-db
+    environment:
+      - POSTGRES_USER=tesisuser
+      - POSTGRES_PASSWORD=tesispass
+      - POSTGRES_DB=tesisdb
+    ports:
+      - "5434:5432"
+    volumes:
+      - tesis_db_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8084:8080"
+
+volumes:
+  tesis_db_data:
