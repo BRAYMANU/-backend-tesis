@@ -86,9 +86,9 @@ public class UsuarioService {
     //metodos de mi proyecto tesis
     //metodo para registrar
     public UsuarioResponseDTO Registrarse(UsuarioRequestDTO usuarioRequestDTO){
-        //verificamos si ya existe un usuario con el mismo correo
 
-        usuarioRepository.findByCorreo(usuarioRequestDTO.getCorreo()).ifPresent(u ->{
+        //verificamos si ya existe un usuario con el mismo correo
+    usuarioRepository.findByCorreo(usuarioRequestDTO.getCorreo()).ifPresent(u ->{
             throw new IllegalArgumentException("el correo ya esta registrado");
         });
 
