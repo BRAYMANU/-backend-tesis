@@ -106,6 +106,8 @@ public class UsuarioService {
 
     //metodo para iniciar sesion
     public UsuarioResponseDTO InisiarSesion(UsuarioLoginRequestDTO usuarioLoginRequestDTO){
+        
+        //Buscamos al usuario por su correo
         Usuario usuario = usuarioRepository.findByCorreo(usuarioLoginRequestDTO.getCorreo())
                         .orElseThrow(()-> new ResourceNotFoundException("correo no encontrado"));
         //validamos la contraseña
