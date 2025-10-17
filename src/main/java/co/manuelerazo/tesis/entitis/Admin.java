@@ -11,3 +11,4 @@ import lombok.EqualsAndHashCode;
 public class Admin extends Usuario {
     private String nivelAcceso;        
 }
+ 
