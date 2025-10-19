@@ -9,6 +9,6 @@ import lombok.EqualsAndHashCode;
 @Entity
 
 public class Admin extends Usuario {
-    private String nivelAcceso;        
+    private String nivelAcceso; // nivel del admin, por ejemplo: "alto", "medio", etc       
 }
  
