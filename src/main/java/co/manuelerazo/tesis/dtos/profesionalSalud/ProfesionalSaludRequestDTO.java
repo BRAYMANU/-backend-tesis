@@ -1,16 +1,25 @@
 package co.manuelerazo.tesis.dtos.profesionalSalud;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class ProfesionalSaludRequestDTO {
-    @NotNull(message = "el numero de lisencia del doctor no puede estar vacio")
+
+    @NotBlank(message = "El nombre es obligatorio")
+    private String nombre;
+
+    @Email(message = "Debe ser un correo valido")
+    @NotBlank(message = "El correo es obligatorio")
+    private String correo;
+
+    @NotBlank(message ="La clave es obligatoria")
+    private String clave;
+
+    @NotBlank(message = "el numero de licencia del doctor no puede estar vacio")
     private String numeroLisencia;
 
-    @NotNull(message = "validado es obligatorio")
-    private Boolean validado;
-
-    @NotNull(message = "la especialidad del doctor no puede estar vacia")
+    @NotBlank(message = "la especialidad del doctor no puede estar vacia")
     private String especialidad;
 }

@@ -23,9 +23,17 @@ public class ProfesionalSaludService {
     public ProfesionalSaludResponseDTO CrearNuevoProfesionalEnSalud(ProfesionalSaludRequestDTO profesionalSaludRequestDTO){
         ProfesionalSalud nuevoProfesional = new ProfesionalSalud();
 
+        //Datos heredados de usuario
+        nuevoProfesional.setNombre(profesionalSaludRequestDTO.getNombre());
+        nuevoProfesional.setCorreo(profesionalSaludRequestDTO.getCorreo());
+        nuevoProfesional.setClave(profesionalSaludRequestDTO.getClave());
+        nuevoProfesional.setTipoUsuario("PROFESIONAL_SALUD");
+
+
+        //Datos propios
         nuevoProfesional.setNumeroLisencia(profesionalSaludRequestDTO.getNumeroLisencia());
-        nuevoProfesional.setValidado(profesionalSaludRequestDTO.getValidado());
         nuevoProfesional.setEspecialidad(profesionalSaludRequestDTO.getEspecialidad());
+        nuevoProfesional.setValidado(false); //simepre falso al registrarse
 
         ProfesionalSalud profesionalGuardado = profesionalSaludRepository.save(nuevoProfesional);
         return convertirA_DTO(profesionalGuardado);
@@ -65,7 +73,7 @@ public class ProfesionalSaludService {
 
         // 2. si existe, actualizar sus datos con los DTO.
         profesionalExistente.setNumeroLisencia(profesionalSaludRequestDTO.getNumeroLisencia());
-        profesionalExistente.setValidado(profesionalSaludRequestDTO.getValidado());
+        
         profesionalExistente.setEspecialidad(profesionalSaludRequestDTO.getEspecialidad());
 
         // 3. guardar la entidad actualizada en la base de datos
@@ -90,6 +98,10 @@ public class ProfesionalSaludService {
     //metodo privado para reutilizar la conversion
     private ProfesionalSaludResponseDTO convertirA_DTO(ProfesionalSalud profesionalSalud){
         ProfesionalSaludResponseDTO dto = new ProfesionalSaludResponseDTO();
+        dto.setId(profesionalSalud.getId());
+        dto.setNombre(profesionalSalud.getNombre());
+        dto.setCorreo(profesionalSalud.getCorreo());
+        dto.setTipoUsuario(profesionalSalud.getTipoUsuario());
         dto.setNumeroLisencia(profesionalSalud.getNumeroLisencia());
         dto.setValidado(profesionalSalud.getValidado());
         dto.setEspecialidad(profesionalSalud.getEspecialidad());
