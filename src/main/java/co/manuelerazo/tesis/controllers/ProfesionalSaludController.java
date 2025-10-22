@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.manuelerazo.tesis.dtos.Publicacion.PublicacionRequestDTO;
+import co.manuelerazo.tesis.dtos.Publicacion.PublicacionResponseDTO;
 import co.manuelerazo.tesis.dtos.profesionalSalud.ProfesionalSaludRequestDTO;
 import co.manuelerazo.tesis.dtos.profesionalSalud.ProfesionalSaludResponseDTO;
 import co.manuelerazo.tesis.services.ProfesionalSaludService;
@@ -63,6 +65,13 @@ public class ProfesionalSaludController {
         profesionalSaludService.EliminarProfesionalEnSalud(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    //endpoin para publicar 
+    @PostMapping("/publicaciones")
+    public ResponseEntity <PublicacionResponseDTO> Publicar(@Valid @RequestBody PublicacionRequestDTO dto){
+        PublicacionResponseDTO publicacion = profesionalSaludService.Publicar(dto);
+        return new ResponseEntity<>(publicacion, HttpStatus.CREATED);
     }
     
 }

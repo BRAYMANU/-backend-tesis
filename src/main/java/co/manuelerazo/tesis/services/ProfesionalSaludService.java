@@ -100,7 +100,11 @@ public class ProfesionalSaludService {
         // 2. si existe, la eliminamos
         profesionalSaludRepository.deleteById(id);
     }
-
+    //Nota: si profesionalSalud es LAZY y estás fuera del contexto transaccional, 
+    //acceder a getNombre() puede provocar LazyInitializationException. 
+    //Por eso usamos @Transactional en el método PublicarContenido, la conversión y acceso ocurren dentro de la transacción. 
+    //Si conviertes fuera, considera DTOs desde consulta con joins o fetch.
+    
     //metodo publicar
     @Transactional
     public PublicacionResponseDTO Publicar(PublicacionRequestDTO dto){
