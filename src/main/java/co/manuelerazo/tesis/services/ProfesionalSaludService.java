@@ -1,22 +1,30 @@
 package co.manuelerazo.tesis.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import co.manuelerazo.tesis.dtos.Publicacion.PublicacionRequestDTO;
+import co.manuelerazo.tesis.dtos.Publicacion.PublicacionResponseDTO;
 import co.manuelerazo.tesis.dtos.profesionalSalud.ProfesionalSaludRequestDTO;
 import co.manuelerazo.tesis.dtos.profesionalSalud.ProfesionalSaludResponseDTO;
 import co.manuelerazo.tesis.entitis.ProfesionalSalud;
+import co.manuelerazo.tesis.entitis.Publicacion;
 import co.manuelerazo.tesis.exceptions.ResourceNotFoundException;
 import co.manuelerazo.tesis.repositories.ProfesionalSaludRepository;
+import co.manuelerazo.tesis.repositories.PublicacionRepository;
 
 @Service
 public class ProfesionalSaludService {
     private final ProfesionalSaludRepository profesionalSaludRepository;
+    private final PublicacionRepository publicacionRepository;
 
-    public ProfesionalSaludService(ProfesionalSaludRepository profesionalSaludRepository){
+    public ProfesionalSaludService(ProfesionalSaludRepository profesionalSaludRepository, PublicacionRepository publicacionRepository){
         this.profesionalSaludRepository = profesionalSaludRepository;
+        this.publicacionRepository = publicacionRepository;
     }
 
     //metodo para crear un nuevo profesional en salud
@@ -92,6 +100,48 @@ public class ProfesionalSaludService {
         // 2. si existe, la eliminamos
         profesionalSaludRepository.deleteById(id);
     }
+
+    //metodo publicar
+    @Transactional
+    public PublicacionResponseDTO Publicar(PublicacionRequestDTO dto){
+        //1 validaciones y busquedas del profesional
+        Integer profesionalId = dto.getIdProfesionalSalud();
+        ProfesionalSalud profesional = profesionalSaludRepository.findById(profesionalId)
+                        .orElseThrow(()-> new ResourceNotFoundException("Profesional en salud no encontrado con el Id "+profesionalId));
+        
+        //2.verificar que el profesional este valido
+        if(profesional.getValidado() == null || !profesional.getValidado()){
+            throw new IllegalArgumentException("El profesional no esta valido para pubicar contenido");
+        }
+
+        //3. Crear y poblar la entidad publicacion
+        Publicacion publicacion = new Publicacion();
+        publicacion.setTitulo(dto.getTitulo());
+        publicacion.setContenido(dto.getContenido());
+        publicacion.setFechaPublicacion(LocalDate.now());
+        publicacion.setProfesionalSalud(profesional);
+
+        //4. Guardar en la base de datos 
+        Publicacion guardada = publicacionRepository.save(publicacion);
+
+        //5. Convertir a DTO y devolver respuesta
+        return convertirPublicacionA_DTO(guardada);
+    }
+
+    //metodo privado para convertir Publicacion a PublicacionResponseDTO
+    private PublicacionResponseDTO convertirPublicacionA_DTO(Publicacion p){
+        PublicacionResponseDTO r = new PublicacionResponseDTO();
+        r.setId(p.getId());
+        r.setTitulo(p.getTitulo());
+        r.setContenido(p.getContenido());
+        r.setFechaPublicacion(p.getFechaPublicacion());
+        if(p.getProfesionalSalud() != null){
+            r.setIdProfesionalSalud(p.getProfesionalSalud().getId());
+            r.setNombreProfesional(p.getProfesionalSalud().getNombre());
+        }
+        return r;
+    }
+
 
 
 
