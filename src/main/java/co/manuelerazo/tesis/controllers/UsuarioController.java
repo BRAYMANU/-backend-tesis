@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.manuelerazo.tesis.dtos.usuario.UsuarioLoginRequestDTO;
-import co.manuelerazo.tesis.dtos.usuario.UsuarioRequestDTO;
+import co.manuelerazo.tesis.dtos.usuario.UsuarioRegistroRequestDTO;
 import co.manuelerazo.tesis.dtos.usuario.UsuarioResponseDTO;
 import co.manuelerazo.tesis.services.UsuarioService;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class UsuarioController {
 
     //para crear un nuevo usuario de tipo post
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> CrearUsuario (@Valid @RequestBody UsuarioRequestDTO usuarioRequestDTO){
+    public ResponseEntity<UsuarioResponseDTO> CrearUsuario (@Valid @RequestBody UsuarioRegistroRequestDTO usuarioRequestDTO){
         UsuarioResponseDTO nuevoUsuario = usuarioService.CrearUsuario(usuarioRequestDTO);
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
@@ -52,7 +52,7 @@ public class UsuarioController {
     }
     //para editar
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> EliminarUsuario (@PathVariable Integer id, @Valid @RequestBody UsuarioRequestDTO usuarioRequestDTO){
+    public ResponseEntity<UsuarioResponseDTO> EliminarUsuario (@PathVariable Integer id, @Valid @RequestBody UsuarioRegistroRequestDTO usuarioRequestDTO){
         UsuarioResponseDTO usuarioActualizado = usuarioService.ActualizarUsuario(id, usuarioRequestDTO);
         return ResponseEntity.ok(usuarioActualizado);
     }
@@ -66,7 +66,7 @@ public class UsuarioController {
 
     // POST /api/usuarios/registrar
     @PostMapping("/registrar")
-    public ResponseEntity<UsuarioResponseDTO> Registrarse(@Valid @RequestBody UsuarioRequestDTO usuarioRequestDTO){
+    public ResponseEntity<UsuarioResponseDTO> Registrarse(@Valid @RequestBody UsuarioRegistroRequestDTO usuarioRequestDTO){
         UsuarioResponseDTO usuario = usuarioService.Registrarse(usuarioRequestDTO);
         return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     }

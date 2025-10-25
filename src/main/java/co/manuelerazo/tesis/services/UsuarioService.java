@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import co.manuelerazo.tesis.dtos.usuario.UsuarioLoginRequestDTO;
-import co.manuelerazo.tesis.dtos.usuario.UsuarioRequestDTO;
+import co.manuelerazo.tesis.dtos.usuario.UsuarioRegistroRequestDTO;
 import co.manuelerazo.tesis.dtos.usuario.UsuarioResponseDTO;
 import co.manuelerazo.tesis.entitis.Usuario;
 import co.manuelerazo.tesis.exceptions.ResourceNotFoundException;
@@ -21,7 +21,7 @@ public class UsuarioService {
     }
 
     //crear nuevo usuario
-    public UsuarioResponseDTO CrearUsuario(UsuarioRequestDTO usuarioRequestDTO){
+    public UsuarioResponseDTO CrearUsuario(UsuarioRegistroRequestDTO usuarioRequestDTO){
         Usuario nuevoUsuario = new Usuario();
 
         nuevoUsuario.setNombre(usuarioRequestDTO.getNombre());
@@ -54,7 +54,7 @@ public class UsuarioService {
     }
 
     //metodo para catualizar el usuario
-    public UsuarioResponseDTO ActualizarUsuario (Integer id, UsuarioRequestDTO usuarioRequestDTO){
+    public UsuarioResponseDTO ActualizarUsuario (Integer id, UsuarioRegistroRequestDTO usuarioRequestDTO){
         //buscamos por id
         Usuario usuarioExistente = usuarioRepository.findById(id)
                         //si no lo encontramos mostramos uestra excepcion personalizada
@@ -85,7 +85,7 @@ public class UsuarioService {
 
     //metodos de mi proyecto tesis
     //metodo para registrar
-    public UsuarioResponseDTO Registrarse(UsuarioRequestDTO usuarioRequestDTO){
+    public UsuarioResponseDTO Registrarse(UsuarioRegistroRequestDTO usuarioRequestDTO){
 
         //verificamos si ya existe un usuario con el mismo correo
     usuarioRepository.findByCorreo(usuarioRequestDTO.getCorreo()).ifPresent(u ->{
@@ -125,7 +125,6 @@ public class UsuarioService {
         dto.setId(usuario.getId());
         dto.setNombre(usuario.getNombre());
         dto.setCorreo(usuario.getCorreo());
-        dto.setClave(usuario.getClave());
         dto.setTipoUsuario(usuario.getTipoUsuario());
         return dto;
     }

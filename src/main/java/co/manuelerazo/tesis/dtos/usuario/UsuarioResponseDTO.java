@@ -7,6 +7,11 @@ public class UsuarioResponseDTO {
     private Integer id;
     private String nombre;
     private String correo;
-    private String clave;
     private String tipoUsuario; 
+
+    // Para el caso de profesional
+    private String numeroLicencia;
+    private String especialidad;
+    private Boolean validado;  // solo si aplica
+
 }
