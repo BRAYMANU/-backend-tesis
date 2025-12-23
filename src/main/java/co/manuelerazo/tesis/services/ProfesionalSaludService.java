@@ -27,7 +27,7 @@ public class ProfesionalSaludService {
         this.publicacionRepository = publicacionRepository;
     }
 
-    //metodo para crear un nuevo profesional en salud
+    //1. metodo para crear un nuevo profesional en salud
     public ProfesionalSaludResponseDTO CrearNuevoProfesionalEnSalud(ProfesionalSaludRequestDTO profesionalSaludRequestDTO){
         ProfesionalSalud nuevoProfesional = new ProfesionalSalud();
 
@@ -47,7 +47,7 @@ public class ProfesionalSaludService {
         return convertirA_DTO(profesionalGuardado);
     }
 
-    //metodo para obtener todos los profesionales en salud
+    //2. metodo para obtener todos los profesionales en salud
     public List<ProfesionalSaludResponseDTO> ObtenerTodosLosProfesionales(){
 
         //obtenemos la lista de todos los profesionales en salud
@@ -59,7 +59,7 @@ public class ProfesionalSaludService {
                             .collect(Collectors.toList());
     }
 
-    //metodo para obtener profesional en salud por id 
+    //3. metodo para obtener profesional en salud por id 
     public ProfesionalSaludResponseDTO ObtenerProfesionalSaludPorId (Integer id){
 
         // 1. Buscar profesional en salud  por id. findbyid devuelve un optional
@@ -73,7 +73,7 @@ public class ProfesionalSaludService {
 
     }
 
-    //metodo para editar profesional en salud
+    //4. metodo para actualizar profesional en salud
     public ProfesionalSaludResponseDTO ActualizarProfesionalSalud (Integer id, ProfesionalSaludRequestDTO profesionalSaludRequestDTO){
         // 1. Primero, buscar si el profesional en salud  que se quiere actualizar existe
         ProfesionalSalud profesionalExistente = profesionalSaludRepository.findById(id)
@@ -91,7 +91,7 @@ public class ProfesionalSaludService {
         return convertirA_DTO(profesionalActualizado);
     }
 
-    //metodo para eliminar profesional en salud
+    //5. metodo para eliminar profesional en salud
     public void EliminarProfesionalEnSalud(Integer id){
         // 1. verificamos que el profesional en salud  exista antes de borrarla
         if(!profesionalSaludRepository.existsById(id)){
@@ -105,7 +105,7 @@ public class ProfesionalSaludService {
     //Por eso usamos @Transactional en el método PublicarContenido, la conversión y acceso ocurren dentro de la transacción. 
     //Si conviertes fuera, considera DTOs desde consulta con joins o fetch.
     
-    //metodo publicar
+    //6. metodo publicar
     @Transactional
     public PublicacionResponseDTO Publicar(PublicacionRequestDTO dto){
         //1 validaciones y busquedas del profesional
@@ -132,7 +132,7 @@ public class ProfesionalSaludService {
         return convertirPublicacionA_DTO(guardada);
     }
 
-    //metodo privado para convertir Publicacion a PublicacionResponseDTO
+    //7. metodo privado para convertir Publicacion a PublicacionResponseDTO
     private PublicacionResponseDTO convertirPublicacionA_DTO(Publicacion p){
         PublicacionResponseDTO r = new PublicacionResponseDTO();
         r.setId(p.getId());
@@ -145,9 +145,6 @@ public class ProfesionalSaludService {
         }
         return r;
     }
-
-
-
 
     //metodo privado para reutilizar la conversion
     private ProfesionalSaludResponseDTO convertirA_DTO(ProfesionalSalud profesionalSalud){

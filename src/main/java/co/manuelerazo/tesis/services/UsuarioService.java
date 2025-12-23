@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import co.manuelerazo.tesis.dtos.usuario.UsuarioLoginRequestDTO;
 import co.manuelerazo.tesis.dtos.usuario.UsuarioRegistroRequestDTO;
 import co.manuelerazo.tesis.dtos.usuario.UsuarioResponseDTO;
+import co.manuelerazo.tesis.entitis.ProfesionalSalud;
 import co.manuelerazo.tesis.entitis.Usuario;
 import co.manuelerazo.tesis.exceptions.ResourceNotFoundException;
 import co.manuelerazo.tesis.repositories.UsuarioRepository;
@@ -20,7 +21,7 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    //crear nuevo usuario
+    //1. crear nuevo usuario
     public UsuarioResponseDTO CrearUsuario(UsuarioRegistroRequestDTO usuarioRequestDTO){
         Usuario nuevoUsuario = new Usuario();
 
@@ -33,7 +34,7 @@ public class UsuarioService {
         return convertirA_DTO(usuarioGuardado);
     }
 
-    //obtener todos los usuarios
+    //2. obtener todos los usuarios
     public List<UsuarioResponseDTO> ObtenerUsuarios(){
         List<Usuario>usuarios = usuarioRepository.findAll();
 
@@ -42,7 +43,7 @@ public class UsuarioService {
                 .collect(Collectors.toList());
     }
 
-    //para obtener ususario por id
+    //3. para obtener ususario por id
     public UsuarioResponseDTO ObtenerUsuarioPorId (Integer id){
         //buscamos por id
         Usuario usuario = usuarioRepository.findById(id)
@@ -53,7 +54,7 @@ public class UsuarioService {
         return convertirA_DTO(usuario);
     }
 
-    //metodo para catualizar el usuario
+    //4. metodo para catualizar el usuario
     public UsuarioResponseDTO ActualizarUsuario (Integer id, UsuarioRegistroRequestDTO usuarioRequestDTO){
         //buscamos por id
         Usuario usuarioExistente = usuarioRepository.findById(id)
@@ -73,7 +74,7 @@ public class UsuarioService {
         return convertirA_DTO(usuarioActualizado);
     }
     
-    //metodo para eliminar el usuario
+    //5. metodo para eliminar el usuario
     public void EliminarUsuario(Integer id){
         if(!usuarioRepository.existsById(id)){
             throw new ResourceNotFoundException("no se puede eliminar usuario no encontrado con el Id:"+id);
@@ -84,7 +85,7 @@ public class UsuarioService {
     }
 
     //metodos de mi proyecto tesis
-    //metodo para registrar
+    //6. metodo para registrar
     public UsuarioResponseDTO Registrarse(UsuarioRegistroRequestDTO usuarioRequestDTO){
 
         //verificamos si ya existe un usuario con el mismo correo
@@ -92,19 +93,50 @@ public class UsuarioService {
             throw new IllegalArgumentException("el correo ya esta registrado");
         });
 
-        //creamos un nuevo usuario 
-        Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setNombre(usuarioRequestDTO.getNombre());
-        nuevoUsuario.setCorreo(usuarioRequestDTO.getCorreo());
-        nuevoUsuario.setClave(usuarioRequestDTO.getClave());
-        nuevoUsuario.setTipoUsuario("Normal");
+        Usuario usuarioGuardado;
 
-        Usuario guardado = usuarioRepository.save(nuevoUsuario);
+        //2 Decidir tipo de usuario
+        if("PROFESIONAL".equalsIgnoreCase(usuarioRequestDTO.getTipoUsuario())){
 
-        return convertirA_DTO(guardado);
+            // 3. Validaciones exclusivas del profesional
+            if(usuarioRequestDTO.getNumeroLicencia() == null || usuarioRequestDTO.getNumeroLicencia().isBlank()){
+                throw new IllegalArgumentException("La licencia es obligatoria para profesionales");
+            }
+            if(usuarioRequestDTO.getEspecialidad() == null || usuarioRequestDTO.getEspecialidad().isBlank()){
+                throw new IllegalArgumentException("La especialidad es obligatoria para profesionales");
+            }
+
+            //4. creamos el profesional de salud
+            ProfesionalSalud profesional = new ProfesionalSalud();
+            profesional.setNombre(usuarioRequestDTO.getNombre());
+            profesional.setCorreo(usuarioRequestDTO.getCorreo());
+            profesional.setClave(usuarioRequestDTO.getClave());
+            profesional.setTipoUsuario("PROFESIONAL");
+
+            profesional.setNumeroLisencia(usuarioRequestDTO.getNumeroLicencia());
+            profesional.setEspecialidad(usuarioRequestDTO.getEspecialidad());
+            profesional.setValidado(false); // importante 
+
+            usuarioGuardado = usuarioRepository.save(profesional);
+
+        } else {
+
+            //5. creamos usuario normal
+            Usuario usuario = new Usuario();
+            usuario.setNombre(usuarioRequestDTO.getNombre());
+            usuario.setCorreo(usuarioRequestDTO.getCorreo());
+            usuario.setClave(usuarioRequestDTO.getClave());
+            usuario.setTipoUsuario("NORMAL");
+
+            usuarioGuardado = usuarioRepository.save(usuario);
+
+        }
+
+        return convertirA_DTO(usuarioGuardado);
+        
     }
 
-    //metodo para iniciar sesion
+    //7. metodo para iniciar sesion
     public UsuarioResponseDTO InisiarSesion(UsuarioLoginRequestDTO usuarioLoginRequestDTO){
         
         //Buscamos al usuario por su correo
