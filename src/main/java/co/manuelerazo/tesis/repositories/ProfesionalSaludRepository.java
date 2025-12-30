@@ -15,4 +15,5 @@ public interface ProfesionalSaludRepository extends JpaRepository<ProfesionalSal
     // Método personalizado que busca profesionales según si están validados o no
     List<ProfesionalSalud> findByValidado(Boolean validado);
     
+    
 }
