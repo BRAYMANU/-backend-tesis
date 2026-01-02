@@ -26,6 +26,7 @@ public class PublicacionService {
     }
 
     //1 metodo para crear publicacion
+    //@Transactional Si algo falla, NO se guarda nada.
     @Transactional
     public PublicacionResponseDTO CrearPublicacion (PublicacionRequestDTO dto){
         
@@ -49,7 +50,6 @@ public class PublicacionService {
         Publicacion publicacionGuardada = publicacionRepository.save(nuevaPublicacion);
 
         //5. convertir a DTOS y retornamos
-
         return convertirA_DTO(publicacionGuardada);
 
     }
@@ -60,7 +60,6 @@ public class PublicacionService {
             .stream()
             .map(this::convertirA_DTO)
             .toList();
-
     }
 
     //3. metodo para obtener publicacion por id
@@ -110,12 +109,6 @@ public class PublicacionService {
 
         publicacionRepository.delete(publicacionExistente);
     }
-
-
-
-
-
-
     
     //metodo privado para convertir a DTO
     private PublicacionResponseDTO convertirA_DTO(Publicacion p){
@@ -130,8 +123,5 @@ public class PublicacionService {
         dto.setNombreProfesional(p.getProfesionalSalud().getNombre());
 
         return dto;
-
     }
-
-    
 }
