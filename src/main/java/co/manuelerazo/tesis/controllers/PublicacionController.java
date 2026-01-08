@@ -56,8 +56,8 @@ public class PublicacionController {
 
     //5. actualizar publicacion
     @PutMapping("/{idPublicacion}")
-    public ResponseEntity<PublicacionResponseDTO> ActualizarPublicacion (@PathVariable Integer idPublicasion, @RequestParam Integer idProfesional, @Valid @RequestBody PublicacionRequestDTO dto ){
-        return ResponseEntity.ok(publicacionService.ActualizarPublicacion(idPublicasion, idProfesional, dto));
+    public ResponseEntity<PublicacionResponseDTO> ActualizarPublicacion (@PathVariable Integer idPublicacion, @RequestParam Integer idProfesional, @Valid @RequestBody PublicacionRequestDTO dto ){
+        return ResponseEntity.ok(publicacionService.ActualizarPublicacion(idPublicacion, idProfesional, dto));
     }
 
     //6. eliminar publicacion
