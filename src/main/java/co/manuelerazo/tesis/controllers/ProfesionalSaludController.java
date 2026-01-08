@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.manuelerazo.tesis.dtos.Publicacion.PublicacionRequestDTO;
-import co.manuelerazo.tesis.dtos.Publicacion.PublicacionResponseDTO;
+
 import co.manuelerazo.tesis.dtos.profesionalSalud.ProfesionalSaludRequestDTO;
 import co.manuelerazo.tesis.dtos.profesionalSalud.ProfesionalSaludResponseDTO;
 import co.manuelerazo.tesis.services.ProfesionalSaludService;
@@ -66,7 +65,4 @@ public class ProfesionalSaludController {
 
         return ResponseEntity.noContent().build();
     }
-    
-    
-    
 }
