@@ -104,47 +104,7 @@ public class ProfesionalSaludService {
     //acceder a getNombre() puede provocar LazyInitializationException. 
     //Por eso usamos @Transactional en el método PublicarContenido, la conversión y acceso ocurren dentro de la transacción. 
     //Si conviertes fuera, considera DTOs desde consulta con joins o fetch.
-    
-    //6. metodo publicar
-    @Transactional
-    public PublicacionResponseDTO Publicar(PublicacionRequestDTO dto){
-        //1 validaciones y busquedas del profesional
-        Integer profesionalId = dto.getIdProfesionalSalud();
-        ProfesionalSalud profesional = profesionalSaludRepository.findById(profesionalId)
-                        .orElseThrow(()-> new ResourceNotFoundException("Profesional en salud no encontrado con el Id "+profesionalId));
-        
-        //2.verificar que el profesional este valido
-        if(profesional.getValidado() == null || !profesional.getValidado()){
-            throw new IllegalArgumentException("El profesional no esta valido para pubicar contenido");
-        }
 
-        //3. Crear y poblar la entidad publicacion
-        Publicacion publicacion = new Publicacion();
-        publicacion.setTitulo(dto.getTitulo());
-        publicacion.setContenido(dto.getContenido());
-        publicacion.setFechaPublicacion(LocalDate.now());
-        publicacion.setProfesionalSalud(profesional);
-
-        //4. Guardar en la base de datos 
-        Publicacion guardada = publicacionRepository.save(publicacion);
-
-        //5. Convertir a DTO y devolver respuesta
-        return convertirPublicacionA_DTO(guardada);
-    }
-
-    //7. metodo privado para convertir Publicacion a PublicacionResponseDTO
-    private PublicacionResponseDTO convertirPublicacionA_DTO(Publicacion p){
-        PublicacionResponseDTO r = new PublicacionResponseDTO();
-        r.setId(p.getId());
-        r.setTitulo(p.getTitulo());
-        r.setContenido(p.getContenido());
-        r.setFechaPublicacion(p.getFechaPublicacion());
-        if(p.getProfesionalSalud() != null){
-            r.setIdProfesionalSalud(p.getProfesionalSalud().getId());
-            r.setNombreProfesional(p.getProfesionalSalud().getNombre());
-        }
-        return r;
-    }
 
     //metodo privado para reutilizar la conversion
     private ProfesionalSaludResponseDTO convertirA_DTO(ProfesionalSalud profesionalSalud){

@@ -66,12 +66,7 @@ public class ProfesionalSaludController {
 
         return ResponseEntity.noContent().build();
     }
-
-    //endpoin para publicar 
-    @PostMapping("/publicaciones")
-    public ResponseEntity <PublicacionResponseDTO> Publicar(@Valid @RequestBody PublicacionRequestDTO dto){
-        PublicacionResponseDTO publicacion = profesionalSaludService.Publicar(dto);
-        return new ResponseEntity<>(publicacion, HttpStatus.CREATED);
-    }
+    
+    
     
 }
