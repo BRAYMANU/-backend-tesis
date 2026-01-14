@@ -64,9 +64,12 @@ public class CategoriaService {
         if(categoriaRepository.existsByNombre(dto.getNombre()) && !categoria.getNombre().equals(dto.getNombre())){
             throw new IllegalArgumentException("Ya existe una categoría con ese nombre");
         }
-        
+
         categoria.setNombre(dto.getNombre());
-        return convertirA_DTO(categoria);
+        categoria.setDescripcion(dto.getDescripcion());
+
+        Categoria categoriaActualizada = categoriaRepository.save(categoria);
+        return convertirA_DTO(categoriaActualizada);
     }
 
     //5. obtener publicacion por categoria
@@ -88,8 +91,11 @@ public class CategoriaService {
                 .orElseThrow(()-> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
 
        // Romper la relación con publicaciones (tabla intermedia)  
-       categoria.getPublicaciones().clear();
-       categoriaRepository.delete(categoria);  
+        categoria.getPublicaciones().forEach(p -> p.getCategorias().remove(categoria));
+        
+        categoria.getPublicaciones().clear();
+        
+        categoriaRepository.delete(categoria);  
     }
 
     //metodo privado para convertir publicacion a dto
