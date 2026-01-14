@@ -59,16 +59,14 @@ public class CategoriaService {
     public CategoriaResponseDTO ActualizarCateoria(Integer id, CategoriaRequestDTO dto){
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+
       //¿El nombre viejo es IGUAL al nombre nuevo?Ese código SOLO detecta si el nombre cambió o no.
         if(categoriaRepository.existsByNombre(dto.getNombre()) && !categoria.getNombre().equals(dto.getNombre())){
             throw new IllegalArgumentException("Ya existe una categoría con ese nombre");
         }
-
+        
         categoria.setNombre(dto.getNombre());
-        categoria.setDescripcion(dto.getDescripcion());
-
-        Categoria categoriaActualizada = categoriaRepository.save(categoria);
-        return convertirA_DTO(categoriaActualizada);
+        return convertirA_DTO(categoria);
     }
 
     //5. obtener publicacion por categoria
@@ -91,7 +89,6 @@ public class CategoriaService {
 
        // Romper la relación con publicaciones (tabla intermedia)  
        categoria.getPublicaciones().clear();
-
        categoriaRepository.delete(categoria);  
     }
 

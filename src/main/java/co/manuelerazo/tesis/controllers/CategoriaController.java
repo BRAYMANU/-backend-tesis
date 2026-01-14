@@ -37,18 +37,21 @@ public class CategoriaController {
     //2. obtener todas las categorias
     @GetMapping
     public ResponseEntity<List<CategoriaResponseDTO>> ObtenerTodasLasCategorias(){
-        return ResponseEntity.ok(categoriaService.ObtenerTodasLasCategorias());
+        List<CategoriaResponseDTO> categorias = categoriaService.ObtenerTodasLasCategorias();
+        return ResponseEntity.ok(categorias);
+        
     }
 
     //3. obtener categoria por id
     @GetMapping("/{id}")
     public ResponseEntity<CategoriaResponseDTO> ObtenerCategoriaPorId(@PathVariable Integer id){
-        return ResponseEntity.ok(categoriaService.ObtenerCategoriaPorId(id));
+        CategoriaResponseDTO categoria = categoriaService.ObtenerCategoriaPorId(id);
+        return ResponseEntity.ok(categoria);
     }
 
     //4.Actualizar categoria
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaResponseDTO> ActualizarCateoria (@PathVariable Integer id, @Valid @RequestBody CategoriaRequestDTO dto){
+    public ResponseEntity<CategoriaResponseDTO> ActualizarCategoria (@PathVariable Integer id, @Valid @RequestBody CategoriaRequestDTO dto){
         CategoriaResponseDTO categoriaActualizada = categoriaService.ActualizarCateoria(id, dto);
         return ResponseEntity.ok(categoriaActualizada);
 
@@ -59,7 +62,8 @@ public class CategoriaController {
     //5.obtener publicaciones por categoria
     @GetMapping("/{id}/publicaciones")
     public ResponseEntity<List<PublicacionResponseDTO>> ObtenerPublicacionesPorCategoria(@PathVariable Integer id){
-        return ResponseEntity.ok(categoriaService.ObtenerPublicacionesPorCategoria(id));
+        List<PublicacionResponseDTO> publicaciones = categoriaService.ObtenerPublicacionesPorCategoria(id);
+        return ResponseEntity.ok(publicaciones);
     }
 
     //6. eliminar categoria
