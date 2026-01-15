@@ -24,7 +24,7 @@ public class Categoria {
 
     //relacion (inversa) muchos a muchos con publicacion
     @JsonIgnore
-    @ManyToMany(mappedBy = "categorias")
+    @ManyToMany(mappedBy = "categorias")//esta categoria 
     private Set<Publicacion> publicaciones = new HashSet<>();
 
     //relacion (inversa) muchos a muchos con producto

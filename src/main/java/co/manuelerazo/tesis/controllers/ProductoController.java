@@ -27,20 +27,20 @@ public class ProductoController {
     }
 
 
-    //para crear un nuevo producto de tipo post
+    //1. para crear un nuevo producto de tipo post
     @PostMapping
     public ResponseEntity<ProductoResponseDTO>CrearNuevoProducto(@Valid @RequestBody ProductoRequestDTO productoRequestDTO){
         ProductoResponseDTO nuevoProducto = productoService.CrearProducto(productoRequestDTO);
         return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED);
     }
-    //para leer todos los productos que existen en la base de datos
+    //2. para leer todos los productos que existen en la base de datos
     @GetMapping
     public ResponseEntity<List<ProductoResponseDTO>> ObtenerTodosLosProductos(){
         List<ProductoResponseDTO> productos = productoService.ObtenerTodosLosProductos();
         return ResponseEntity.ok(productos);
     }
 
-    //para buscar con el id
+    //3. para buscar con el id
     //el {id} en la url es una variable de ruta
     @GetMapping("/{id}")
     public ResponseEntity<ProductoResponseDTO> ObtenerProductoId (@PathVariable Integer id){
@@ -50,23 +50,29 @@ public class ProductoController {
     }
 
     //para buscar con nombre
-    //el {nombre} en la url se convierte en una variable de ruta
-    @GetMapping("/{nombre}")
+    //4.  el {nombre} en la url se convierte en una variable de ruta
+    @GetMapping("/buscar/{nombre}")
     public ResponseEntity<ProductoResponseDTO> ObtenerProducoPorNombre(@PathVariable String nombre){
         //extraemos el nombre {nombre} de la url
         ProductoResponseDTO producto = productoService.BuscarProductoPorNombre(nombre);
         return ResponseEntity.ok(producto);
     }
 
+    //5. obtener poroducto por categoria
+    @GetMapping("/categoria/{idCategoria}")
+    public ResponseEntity<List<ProductoResponseDTO>> ObtenerProductoPorCategoria(@PathVariable Integer idCategoria){
+        List<ProductoResponseDTO> productos = productoService.ObtenerProductoPorCategoria(idCategoria);
+        return ResponseEntity.ok(productos);
+    }
 
-    //para editar
+    //6. para actualizar
     @PutMapping("/{id}")
     public ResponseEntity<ProductoResponseDTO> ActualizarProducto (@PathVariable Integer id, @Valid @RequestBody ProductoRequestDTO productoRequestDTO){
         ProductoResponseDTO productoActualizado = productoService.ActualizarProducto(id, productoRequestDTO);
         return ResponseEntity.ok(productoActualizado);
     }
 
-    //para eliminar
+    //7. para eliminar
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> EliminarProducto(@PathVariable Integer id){
         productoService.EliminarProducto(id);
