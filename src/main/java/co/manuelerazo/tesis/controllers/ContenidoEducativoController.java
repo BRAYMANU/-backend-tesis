@@ -27,14 +27,14 @@ public class ContenidoEducativoController {
         this.contenidoEducativoService = contenidoEducativoService;
     }
 
-    //endpoint para crear un nuevo contenido
+    //1. endpoint para crear un nuevo contenido
     @PostMapping
     public ResponseEntity<ContenidoEducativoResponseDTO> nuevoContenido(@Valid @RequestBody ContenidoEducativoRequestDTO contenidoEducativoRequestDTO){
         ContenidoEducativoResponseDTO nuevoContenido = contenidoEducativoService.CrearNuevoContenido(contenidoEducativoRequestDTO);
         return new ResponseEntity<>(nuevoContenido, HttpStatus.CREATED);
     }
 
-    //endpoint para mostrar todo el contenido
+    //2. endpoint para mostrar todo el contenido
     @GetMapping
     public ResponseEntity<List<ContenidoEducativoResponseDTO>> ObtenerTodoElContenido (){
         List<ContenidoEducativoResponseDTO> contenidos = contenidoEducativoService.ObtenerTodoElContenido();
@@ -42,7 +42,7 @@ public class ContenidoEducativoController {
     }
 
     //endpoint para traer contenido por id
-    // El {id} en la url es una variable de ruta
+    //3. El {id} en la url es una variable de ruta
     @GetMapping("/{id}")
     public ResponseEntity<ContenidoEducativoResponseDTO> ObtenerContenidoPorId (@PathVariable Integer id){
         // 1. @PathVariable extrae el valor de  {id} de la URL
@@ -51,14 +51,14 @@ public class ContenidoEducativoController {
 
     }
 
-    //Editar
+    //4. Editar
     @PutMapping("/{id}")
     public ResponseEntity<ContenidoEducativoResponseDTO> ModificarContenido(@PathVariable Integer id, @Valid @RequestBody ContenidoEducativoRequestDTO contenidoEducativoRequestDTO){
         ContenidoEducativoResponseDTO contenidoActualizado = contenidoEducativoService.ModificarContenido(id, contenidoEducativoRequestDTO);
         return ResponseEntity.ok(contenidoActualizado);
     }
 
-    //Eliminar
+    //5Eliminar
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> EliminarContenido(@PathVariable Integer id){
         contenidoEducativoService.EliminarContenido(id);

@@ -3,6 +3,8 @@ package co.manuelerazo.tesis.entitis;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,8 +24,7 @@ public class ContenidoEducativo {
     
     //relacion 
     @ManyToMany(mappedBy = "contenidoEducativo")
+    @JsonIgnore
     private Set<Producto> productos = new HashSet<>();
-    
-
 
 }

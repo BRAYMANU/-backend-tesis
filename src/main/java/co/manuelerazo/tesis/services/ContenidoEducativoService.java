@@ -19,7 +19,7 @@ public class ContenidoEducativoService {
         this.contenidoEducativoRepository = contenidoEducativoRepository;
     }
 
-    //crear un nuevo contenido educativo
+    //1. crear un nuevo contenido educativo
     public ContenidoEducativoResponseDTO CrearNuevoContenido (ContenidoEducativoRequestDTO contenidoEducativoRequestDTO){
         ContenidoEducativo nuevoContenido = new ContenidoEducativo();
 
@@ -34,7 +34,7 @@ public class ContenidoEducativoService {
         return convertirA_DTO(contenidoGuardado);
     }
 
-    //metodo para obtener todo el contenido educativo
+    //2.metodo para obtener todo el contenido educativo
     public List<ContenidoEducativoResponseDTO> ObtenerTodoElContenido(){
         List<ContenidoEducativo> contenidos = contenidoEducativoRepository.findAll();
 
@@ -43,7 +43,7 @@ public class ContenidoEducativoService {
                 .collect(Collectors.toList());
     }
 
-    //metodo para obtener un contenido por id
+    //3. metodo para obtener un contenido por id
     public ContenidoEducativoResponseDTO ObtenerContenidoPorId (Integer id){
         //buscamos contenido por id
         ContenidoEducativo contenidoEducativo = contenidoEducativoRepository.findById(id)
@@ -54,7 +54,7 @@ public class ContenidoEducativoService {
         return convertirA_DTO(contenidoEducativo);
     }
 
-    //metodo para modificar el contenido educativo
+    //4. metodo para modificar el contenido educativo
     public ContenidoEducativoResponseDTO ModificarContenido (Integer id, ContenidoEducativoRequestDTO contenidoEducativoRequestDTO){
         //buscamos contenido por id
         ContenidoEducativo contenidoEducativoExistente = contenidoEducativoRepository.findById(id)
@@ -73,7 +73,7 @@ public class ContenidoEducativoService {
         return convertirA_DTO(contenidoModificado);
     }
 
-    //metodo para eliminar el contenido educativo
+    //5.metodo para eliminar el contenido educativo
     public void EliminarContenido (Integer id){
         //verificamos si el contenido existe
         if(!contenidoEducativoRepository.existsById(id)){

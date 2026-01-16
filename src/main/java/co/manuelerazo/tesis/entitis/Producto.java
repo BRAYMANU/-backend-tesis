@@ -24,7 +24,7 @@ public class Producto {
     private String descripcion;
     private String advertencias;   
     
-    /* 
+    
     //relacion de muchos a muchos con ContenidoEducativo
     @ManyToMany 
     @JoinTable(
@@ -32,7 +32,7 @@ public class Producto {
         joinColumns = @JoinColumn(name = "producto_id"), 
         inverseJoinColumns = @JoinColumn(name = "contenidoEducativo_id")
     )
-    private Set<ContenidoEducativo> contenidoEducativo = new HashSet<>();*/
+    private Set<ContenidoEducativo> contenidoEducativo = new HashSet<>();
     
     //relacion de muchos a muchos con categoria
     @ManyToMany
