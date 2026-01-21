@@ -34,13 +34,13 @@ public class Producto {
     )
     private Set<ContenidoEducativo> contenidoEducativo = new HashSet<>();
     
-    //relacion de muchos a muchos con categoria
+    //relacion de muchos a muchos con FuenteCientifica
     @ManyToMany
     @JoinTable(
-        name = "producto_categoria",
+        name = "producto_fuente_cientifica",
         joinColumns = @JoinColumn(name = "producto_id"),
-        inverseJoinColumns = @JoinColumn(name = "categoria_id")
+        inverseJoinColumns = @JoinColumn(name = "fuente_cientifica_id")
     )
-    @JsonIgnore
-    private Set<Categoria> categorias = new HashSet<>();
+    private Set<FuenteCientifica> fuenteCientificas = new HashSet<>();
 }
+

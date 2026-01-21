@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 import co.manuelerazo.tesis.entitis.FuenteCientifica;
 
 @Repository
-public interface FuenteCientificaRepository extends JpaRepository<FuenteCientifica, Integer> {
-    
+public interface FuenteCientificaRepository extends JpaRepository<FuenteCientifica, Integer> {   
 }

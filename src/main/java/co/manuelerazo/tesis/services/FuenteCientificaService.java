@@ -14,7 +14,6 @@ import co.manuelerazo.tesis.repositories.FuenteCientificaRepository;
 import co.manuelerazo.tesis.repositories.ProductoRepository;
 
 
-
 @Service
 public class FuenteCientificaService {
     private final FuenteCientificaRepository fuenteCientificaRepository;
@@ -23,38 +22,99 @@ public class FuenteCientificaService {
     public FuenteCientificaService (FuenteCientificaRepository fuenteCientificaRepository, ProductoRepository productoRepository){
         this.fuenteCientificaRepository = fuenteCientificaRepository;
         this.productoRepository =productoRepository;
-
     }
 
-    //metodo para crear nueva fuente cientifica 
-    public FuenteCientificaResponseDTO CreraNuevaFuenteCientifica (FuenteCientificaRequestDTO fuenteCientificaRequestDTO){
+    //1. metodo para crear nueva fuente cientifica 
+    public FuenteCientificaResponseDTO CrearNuevaFuenteCientifica (FuenteCientificaRequestDTO fuenteCientificaRequestDTO){
         //1.buscar la entidad relacionada (producto)
-        Producto producto = productoRepository.findById(fuenteCientificaRequestDTO.getProducto_id())
-        .orElseThrow(()->new ResourceNotFoundException("tipo de producto no encontrado con el id "+ fuenteCientificaRequestDTO.getProducto_id()));
+        Producto producto = productoRepository.findById(fuenteCientificaRequestDTO.getProductoId())
+                .orElseThrow(()->new ResourceNotFoundException("tipo de producto no encontrado con el id "+ fuenteCientificaRequestDTO.getProductoId()));
         
-        //mapea el Dtoa a la entidad fuente cientifica
+        //mapea el Dto a la entidad fuente cientifica
         FuenteCientifica nuevaFuenteCientifica = new FuenteCientifica();
         nuevaFuenteCientifica.setTitulo(fuenteCientificaRequestDTO.getTitulo());
         nuevaFuenteCientifica.setEnlace((fuenteCientificaRequestDTO.getEnlace()));
 
-        //asigano la entedidad relacionada
-        nuevaFuenteCientifica.setProducto(producto);
-
+        //relacion mantener ambos lados sincronizados.
+        nuevaFuenteCientifica.getProductos().add(producto);
+        producto.getFuenteCientificas().add(nuevaFuenteCientifica);
+        
         //guardamos la nueva fuente cientifica 
         FuenteCientifica fuenteCientificaGuaradada = fuenteCientificaRepository.save(nuevaFuenteCientifica);
 
         //convertimos al DTO de respuesta y retornar
-        return ConvertirADTO(fuenteCientificaGuaradada);
+        return ConvertirADTO(fuenteCientificaGuaradada, producto);
     }
 
+    //2. metodo para obtener todas las fuentes cientificas
     public List<FuenteCientificaResponseDTO> ObtenerTodasLasFuentes (){
-        return fuenteCientificaRepository.findAll().stream()
-                    .map(this::ConvertirADTO)
-                    .collect(Collectors.toList());
+        List<FuenteCientifica> fuentes = fuenteCientificaRepository.findAll();
+        return fuentes.stream()
+                .map(this::ConvertirADTOBasico)
+                .collect(Collectors.toList());
     }
 
+    //3. metodo para obtener fuente cientifica por id
+    public FuenteCientificaResponseDTO ObtenerFuenteCientificaPorId(Integer id){
+        FuenteCientifica fuente = fuenteCientificaRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Fuente cientifica no encontrada con el id: "+id));
 
-    private FuenteCientificaResponseDTO ConvertirADTO(FuenteCientifica fuenteCientifica){
+        return ConvertirADTOBasico(fuente);
+    }
+
+    //4.metodo para actulizar fuente cientifica
+    public FuenteCientificaResponseDTO ActualizarFuenteCientifica(Integer id, FuenteCientificaRequestDTO fuenteCientificaRequestDTO){
+        FuenteCientifica fuenteCientifica = fuenteCientificaRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Fuente cientifica no encontrada con el id: "+id));
+        
+        fuenteCientifica.setTitulo(fuenteCientificaRequestDTO.getTitulo()); 
+        fuenteCientifica.setEnlace(fuenteCientificaRequestDTO.getEnlace());  
+        
+        FuenteCientifica fuenteActualizada = fuenteCientificaRepository.save(fuenteCientifica);
+        return ConvertirADTOBasico(fuenteActualizada);
+    }
+
+    //5. metodo para eliminar fuente cientifica
+    public void EliminarFuenteCientifica (Integer id){
+        FuenteCientifica fuenteCientifica = fuenteCientificaRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Fuente cientifica no encontrada con el id: "+id));
+
+        //rompemos la relacion
+        for(Producto producto : fuenteCientifica.getProductos()){
+            producto.getFuenteCientificas().remove(fuenteCientifica);
+        } 
+
+        fuenteCientifica.getProductos().clear();
+
+        //eliminamos la fuente 
+        fuenteCientificaRepository.delete(fuenteCientifica);
+    }
+
+    //6. obtener fuentes cientificas por producto
+    public List<FuenteCientificaResponseDTO> ObteneFuentesPorProducto(Integer productoId){
+
+        Producto producto = productoRepository.findById(productoId)
+                .orElseThrow(()->new ResourceNotFoundException("Producto no encontrado con el id: "+productoId));
+
+        return producto.getFuenteCientificas()
+                .stream()
+                .map(this::ConvertirADTOBasico)
+                .collect(Collectors.toList());
+    }
+
+    //metodo auxiliar para convertir entidad a DTO sin entidad relacionada
+    private FuenteCientificaResponseDTO ConvertirADTOBasico(FuenteCientifica fuenteCientifica){
+        FuenteCientificaResponseDTO dto = new FuenteCientificaResponseDTO();
+
+        dto.setId(fuenteCientifica.getId());
+        dto.setTitulo((fuenteCientifica.getTitulo()));
+        dto.setEnlace(fuenteCientifica.getEnlace());
+
+        return dto;
+    }
+
+    //metodo auxiliar para convertir entidad a DTO con relacion
+    private FuenteCientificaResponseDTO ConvertirADTO(FuenteCientifica fuenteCientifica, Producto producto){
         FuenteCientificaResponseDTO dto = new FuenteCientificaResponseDTO();
 
         dto.setId(fuenteCientifica.getId());
@@ -62,13 +122,10 @@ public class FuenteCientificaService {
         dto.setEnlace(fuenteCientifica.getEnlace());
 
         //asiganamos el nombre del producto a la entidad relacionada
-
-        dto.setProductoNombre(fuenteCientifica.getProducto().getNombre());
+        dto.setProductoNombre(producto.getNombre());
         return dto;
     }
-   
-
-   }
+}
 
     
 

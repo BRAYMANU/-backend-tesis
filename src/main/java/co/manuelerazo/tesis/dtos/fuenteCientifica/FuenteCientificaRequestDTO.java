@@ -13,6 +13,5 @@ public class FuenteCientificaRequestDTO {
     private String enlace;
 
     @NotNull(message = "eL ID del producto asociado es obligatorio")
-    private Integer producto_id;
-    
+    private Integer productoId;   
 }

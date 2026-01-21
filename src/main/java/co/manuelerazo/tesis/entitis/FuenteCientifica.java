@@ -1,11 +1,15 @@
 package co.manuelerazo.tesis.entitis;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import lombok.Data;
 
 @Entity
@@ -17,11 +21,8 @@ public class FuenteCientifica {
     private String titulo;
     private String enlace;
     
-    //relacion con producto. Cada fuente cientifica pertenece a un producto
-    @ManyToOne
-    @JoinColumn(name = "producto_id", nullable = false)
-    private Producto producto;
-    
-
-    
+    //Una fuente científica puede respaldar múltiples productos
+    @ManyToMany(mappedBy = "fuenteCientificas")
+    @JsonIgnore
+    private Set<Producto> productos = new HashSet<>();
 }
