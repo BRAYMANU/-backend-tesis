@@ -42,5 +42,14 @@ public class Producto {
         inverseJoinColumns = @JoinColumn(name = "fuente_cientifica_id")
     )
     private Set<FuenteCientifica> fuenteCientificas = new HashSet<>();
+
+    //relacion de muchos a muchos con Categoria
+    @ManyToMany
+    @JoinTable(
+        name = "producto_categoria",
+        joinColumns = @JoinColumn(name = "producto_id"),
+        inverseJoinColumns = @JoinColumn(name = "categoria_id")
+    )
+    private Set<Categoria> categorias = new HashSet<>();
 }
 
