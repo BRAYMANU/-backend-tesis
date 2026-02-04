@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import co.manuelerazo.tesis.dtos.categoria.CategoriaResponseDTO;
 import co.manuelerazo.tesis.dtos.productos.ProductoRequestDTO;
 import co.manuelerazo.tesis.dtos.productos.ProductoResponseDTO;
 import co.manuelerazo.tesis.entitis.Categoria;
@@ -100,6 +101,67 @@ public class ProductoService {
         }
         //si lo encuentra lo eliminamos
         productoRepository.deleteById(id);
+    }
+
+    //8. asignar categoria a un producto
+    public void AsignarCategoriaAProducto(Integer idProducto, Integer idCategoria){
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
+        
+        Categoria categoria = categoriaRepository.findById(idCategoria)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + idCategoria));
+        
+        //evitar duplicados
+        if(producto.getCategorias().contains(categoria)){
+            return; // La categoría ya está asignada al producto
+        }
+
+        //sincronizar ambas partes de la relación
+        producto.getCategorias().add(categoria);
+        categoria.getProductos().add(producto);
+
+        productoRepository.save(producto);
+    }
+
+    //9. quuitar categoria de un producto
+    public void QuitarCategoriaDeProducto(Integer idProducto, Integer idCategoria){
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
+        
+        Categoria categoria = categoriaRepository.findById(idCategoria)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + idCategoria));
+        
+        //verificar si la categoria esta asignada al producto
+        if(!producto.getCategorias().contains(categoria)){
+            return; // La categoría no está asignada al producto
+        }
+
+        //sincronizar ambas partes de la relación
+        producto.getCategorias().remove(categoria);
+        categoria.getProductos().remove(producto);
+
+        productoRepository.save(producto);
+    }
+
+    //10. metodo para listar categorias de un producto
+    public List<CategoriaResponseDTO> ObtenerCategoriasDeProducto(Integer idProducto){
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
+        
+        return producto.getCategorias()
+                .stream()
+                .map(this::convertirCategoriaADTO)
+                .toList();
+    }
+
+    //metodo privado para convertir categoria a dto
+    private CategoriaResponseDTO convertirCategoriaADTO(Categoria categoria){
+        CategoriaResponseDTO dto = new CategoriaResponseDTO();
+        dto.setId(categoria.getId());
+        dto.setNombre(categoria.getNombre());
+        dto.setDescripcion(categoria.getDescripcion());
+        
+        return dto;
     }
 
     //metodo privado para los dtos

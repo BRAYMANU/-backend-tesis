@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.manuelerazo.tesis.dtos.categoria.CategoriaResponseDTO;
 import co.manuelerazo.tesis.dtos.productos.ProductoRequestDTO;
 import co.manuelerazo.tesis.dtos.productos.ProductoResponseDTO;
 import co.manuelerazo.tesis.services.ProductoService;
@@ -77,5 +78,29 @@ public class ProductoController {
     public ResponseEntity<Void> EliminarProducto(@PathVariable Integer id){
         productoService.EliminarProducto(id);
         return ResponseEntity.noContent().build();
+    }
+
+    //8. asignar categoria a producto
+    @PostMapping("/{idProducto}/categoria/{idCategoria}")
+    public ResponseEntity<Void> AsignarCategoriaAProducto(@PathVariable Integer idProducto, @PathVariable Integer idCategoria){
+        productoService.AsignarCategoriaAProducto(idProducto, idCategoria);
+
+        return ResponseEntity.ok().build();
+    }
+
+    //9. quitar categoria de un producto
+    @DeleteMapping("/{idProducto}/categoria/{idCategoria}")
+    public ResponseEntity<Void> QuitarCategoriaDeProducto(@PathVariable Integer idProducto, @PathVariable Integer idCategoria){
+        productoService.QuitarCategoriaDeProducto(idProducto, idCategoria);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    //10. listar categorias de un producto
+    @GetMapping("/{idProducto}/categorias")
+    public ResponseEntity<List<CategoriaResponseDTO>> ObtenerCategoriasDeProducto(@PathVariable Integer idProducto){
+        return ResponseEntity.ok(
+                   productoService.ObtenerCategoriasDeProducto(idProducto)
+        );
     }
 }
