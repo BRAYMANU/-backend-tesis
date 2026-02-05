@@ -26,24 +26,12 @@ public class FuenteCientificaService {
 
     //1. metodo para crear nueva fuente cientifica 
     public FuenteCientificaResponseDTO CrearNuevaFuenteCientifica (FuenteCientificaRequestDTO fuenteCientificaRequestDTO){
-        //1.buscar la entidad relacionada (producto)
-        Producto producto = productoRepository.findById(fuenteCientificaRequestDTO.getProductoId())
-                .orElseThrow(()->new ResourceNotFoundException("tipo de producto no encontrado con el id "+ fuenteCientificaRequestDTO.getProductoId()));
-        
-        //mapea el Dto a la entidad fuente cientifica
-        FuenteCientifica nuevaFuenteCientifica = new FuenteCientifica();
-        nuevaFuenteCientifica.setTitulo(fuenteCientificaRequestDTO.getTitulo());
-        nuevaFuenteCientifica.setEnlace((fuenteCientificaRequestDTO.getEnlace()));
+        FuenteCientifica nuevaFuente = new FuenteCientifica();
+        nuevaFuente.setTitulo(fuenteCientificaRequestDTO.getTitulo());
+        nuevaFuente.setEnlace(fuenteCientificaRequestDTO.getEnlace());
 
-        //relacion mantener ambos lados sincronizados.
-        nuevaFuenteCientifica.getProductos().add(producto);
-        producto.getFuenteCientificas().add(nuevaFuenteCientifica);
-        
-        //guardamos la nueva fuente cientifica 
-        FuenteCientifica fuenteCientificaGuaradada = fuenteCientificaRepository.save(nuevaFuenteCientifica);
-
-        //convertimos al DTO de respuesta y retornar
-        return ConvertirADTO(fuenteCientificaGuaradada, producto);
+        FuenteCientifica fuenteGuardada = fuenteCientificaRepository.save(nuevaFuente);
+        return ConvertirADTOBasico(fuenteGuardada);
     }
 
     //2. metodo para obtener todas las fuentes cientificas
@@ -114,19 +102,6 @@ public class FuenteCientificaService {
             dto.setProductoNombre(fuenteCientifica.getProductos().iterator().next().getNombre());
         }
 
-        return dto;
-    }
-
-    //metodo auxiliar para convertir entidad a DTO con relacion
-    private FuenteCientificaResponseDTO ConvertirADTO(FuenteCientifica fuenteCientifica, Producto producto){
-        FuenteCientificaResponseDTO dto = new FuenteCientificaResponseDTO();
-
-        dto.setId(fuenteCientifica.getId());
-        dto.setTitulo((fuenteCientifica.getTitulo()));
-        dto.setEnlace(fuenteCientifica.getEnlace());
-
-        //asiganamos el nombre del producto a la entidad relacionada
-        dto.setProductoNombre(producto.getNombre());
         return dto;
     }
 }
