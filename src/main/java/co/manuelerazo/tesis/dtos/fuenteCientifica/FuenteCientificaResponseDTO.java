@@ -6,6 +6,5 @@ import lombok.Data;
 public class FuenteCientificaResponseDTO {
     private Integer id;
     private String titulo;
-    private String enlace;
-    private String productoNombre;      
+    private String enlace;     
 }

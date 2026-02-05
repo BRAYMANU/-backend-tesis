@@ -97,11 +97,7 @@ public class FuenteCientificaService {
         dto.setId(fuenteCientifica.getId());
         dto.setTitulo((fuenteCientifica.getTitulo()));
         dto.setEnlace(fuenteCientifica.getEnlace());
-
-        if(!fuenteCientifica.getProductos().isEmpty()){
-            dto.setProductoNombre(fuenteCientifica.getProductos().iterator().next().getNombre());
-        }
-
+        
         return dto;
     }
 }
