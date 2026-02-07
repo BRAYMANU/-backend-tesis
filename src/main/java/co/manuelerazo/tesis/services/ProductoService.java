@@ -13,15 +13,20 @@ import co.manuelerazo.tesis.entitis.Producto;
 import co.manuelerazo.tesis.exceptions.ResourceNotFoundException;
 import co.manuelerazo.tesis.repositories.ProductoRepository;
 import co.manuelerazo.tesis.repositories.CategoriaRepository;
+import co.manuelerazo.tesis.entitis.FuenteCientifica;
+import co.manuelerazo.tesis.repositories.FuenteCientificaRepository;
+import co.manuelerazo.tesis.dtos.fuenteCientifica.FuenteCientificaResponseDTO;
 
 @Service
 public class ProductoService {
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
+    private final FuenteCientificaRepository fuenteCientificaRepository;
 
-    public ProductoService(ProductoRepository productoRepository, CategoriaRepository categoriaRepository){
+    public ProductoService(ProductoRepository productoRepository, CategoriaRepository categoriaRepository, FuenteCientificaRepository fuenteCientificaRepository) {
         this.productoRepository = productoRepository;
         this.categoriaRepository = categoriaRepository;
+        this.fuenteCientificaRepository = fuenteCientificaRepository;
     }
     //1. crear producto
     public ProductoResponseDTO CrearProducto(ProductoRequestDTO productoRequestDTO){
@@ -152,6 +157,67 @@ public class ProductoService {
                 .stream()
                 .map(this::convertirCategoriaADTO)
                 .toList();
+    }
+
+    //11. asignar fuente cientifica a un producto
+    public void AsignarFuenteCientificaAProducto(Integer idProducto, Integer idFuente){
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
+        
+        FuenteCientifica fuente = fuenteCientificaRepository.findById(idFuente)
+                .orElseThrow(() -> new ResourceNotFoundException("Fuente Científica no encontrada con id: " + idFuente));
+        
+        //evitar duplicados
+        if(producto.getFuenteCientificas().contains(fuente)){
+            return; // La fuente científica ya está asignada al producto
+        }
+
+        //sincronizar ambas partes de la relación
+        producto.getFuenteCientificas().add(fuente);
+        fuente.getProductos().add(producto);
+
+        productoRepository.save(producto);
+    }
+
+    //12. quitar fuente cientifica de un producto
+    public void QuitarFuenteCientificaDeProducto(Integer idProducto, Integer idFuente){
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
+        
+        FuenteCientifica fuente = fuenteCientificaRepository.findById(idFuente)
+                .orElseThrow(() -> new ResourceNotFoundException("Fuente Científica no encontrada con id: " + idFuente));
+        
+        //verificar si la fuente esta asignada al producto
+        if(!producto.getFuenteCientificas().contains(fuente)){
+            return; // La fuente científica no está asignada al producto
+        }
+
+        //sincronizar ambas partes de la relación
+        producto.getFuenteCientificas().remove(fuente);
+        fuente.getProductos().remove(producto);
+
+        productoRepository.save(producto);
+    }
+
+    //13. metodo para listar fuentes cientificas de un producto
+    public List<FuenteCientificaResponseDTO> ObtenerFuentesDeProducto(Integer idProducto){
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + idProducto));
+        
+        return producto.getFuenteCientificas()
+                .stream()
+                .map(this::convertirFuenteADTO)
+                .toList();
+    }
+
+    //metodo privado para convertir fuente cientifica a dto
+    private FuenteCientificaResponseDTO convertirFuenteADTO(FuenteCientifica fuenteCientifica){
+        FuenteCientificaResponseDTO dto = new FuenteCientificaResponseDTO();
+        dto.setId(fuenteCientifica.getId());
+        dto.setTitulo(fuenteCientifica.getTitulo());
+        dto.setEnlace(fuenteCientifica.getEnlace());
+
+        return dto;
     }
 
     //metodo privado para convertir categoria a dto

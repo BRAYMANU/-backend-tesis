@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.manuelerazo.tesis.dtos.categoria.CategoriaResponseDTO;
+import co.manuelerazo.tesis.dtos.fuenteCientifica.FuenteCientificaResponseDTO;
 import co.manuelerazo.tesis.dtos.productos.ProductoRequestDTO;
 import co.manuelerazo.tesis.dtos.productos.ProductoResponseDTO;
 import co.manuelerazo.tesis.services.ProductoService;
@@ -84,7 +85,6 @@ public class ProductoController {
     @PostMapping("/{idProducto}/categoria/{idCategoria}")
     public ResponseEntity<Void> AsignarCategoriaAProducto(@PathVariable Integer idProducto, @PathVariable Integer idCategoria){
         productoService.AsignarCategoriaAProducto(idProducto, idCategoria);
-
         return ResponseEntity.ok().build();
     }
 
@@ -92,7 +92,6 @@ public class ProductoController {
     @DeleteMapping("/{idProducto}/categoria/{idCategoria}")
     public ResponseEntity<Void> QuitarCategoriaDeProducto(@PathVariable Integer idProducto, @PathVariable Integer idCategoria){
         productoService.QuitarCategoriaDeProducto(idProducto, idCategoria);
-
         return ResponseEntity.noContent().build();
     }
 
@@ -101,6 +100,28 @@ public class ProductoController {
     public ResponseEntity<List<CategoriaResponseDTO>> ObtenerCategoriasDeProducto(@PathVariable Integer idProducto){
         return ResponseEntity.ok(
                    productoService.ObtenerCategoriasDeProducto(idProducto)
+        );
+    }
+
+    //11. asignar fuente cientifica a producto
+    @PostMapping("/{idProducto}/fuenteCientifica/{idFuenteCientifica}")
+    public ResponseEntity<Void> AsignarFuenteCientificaAProducto(@PathVariable Integer idProducto, @PathVariable Integer idFuente ){
+        productoService.AsignarFuenteCientificaAProducto(idProducto, idFuente);
+        return ResponseEntity.ok().build();
+    }
+
+    //12. quitar fuente cientifica de un producto
+    @DeleteMapping("/{idProducto}/fuenteCientifica/{idFuenteCientifica}")
+    public ResponseEntity<Void> QuitarFuenteCientificaDeProducto(@PathVariable Integer idProducto, @PathVariable Integer idFuente ){
+        productoService.QuitarFuenteCientificaDeProducto(idProducto, idFuente);
+        return ResponseEntity.noContent().build();
+    }
+
+    //13. listar fuentes cientificas de un producto
+    @GetMapping("/{idProducto}/fuentesCientificas")
+    public ResponseEntity<List<FuenteCientificaResponseDTO>> ObtenerFuentesCientificasDeProducto(@PathVariable Integer idProducto){
+        return ResponseEntity.ok(
+                   productoService.ObtenerFuentesDeProducto(idProducto)
         );
     }
 }
