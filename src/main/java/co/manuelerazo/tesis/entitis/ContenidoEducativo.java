@@ -24,7 +24,7 @@ public class ContenidoEducativo {
     
     //relacion 
     @ManyToMany(mappedBy = "contenidoEducativo")
-    @JsonIgnore
+    @JsonIgnore 
     private Set<Producto> productos = new HashSet<>();
 
 }
